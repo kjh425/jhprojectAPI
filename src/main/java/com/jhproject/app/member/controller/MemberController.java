@@ -116,7 +116,7 @@ public class MemberController {
 	    String username = userDetails.getName();
 	    String email = userDetails.getEmail();
         String token = Jwts.builder()
-                .setSubject(username)
+                .setSubject(memberId)
                 .setExpiration(new Date(System.currentTimeMillis() + 864000000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecretKey)// 이 부분에서 서명에 사용할 키를 설정해야 합니다.
                 .compact();
@@ -136,49 +136,6 @@ public class MemberController {
 
         return ResponseEntity.ok(response);
 	}
-	@Autowired
-	private AuthenticationManager authenticationManager;
 
-//	@PostMapping("/signIn")
-//	public ResponseEntity<Map<String, Object>> signInMember(@RequestBody MemberSignInDto memberSignInDto) {
-//	    log.debug("ㅋㅋ 받긴했냐?={}", memberSignInDto);
-//
-//	    // 사용자의 인증을 시도
-//	    Authentication authentication = authenticationManager.authenticate(
-//	            new UsernamePasswordAuthenticationToken(
-//	                    memberSignInDto.getMemberId(),
-//	                    memberSignInDto.getPassword()
-//	            )
-//	    );
-//
-//	    // 인증이 성공하면 SecurityContextHolder에 설정
-//	    SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//	    // 사용자 정보를 생성
-//	    MemberDetails userDetails = (MemberDetails) authentication.getPrincipal();
-//	    String memberId = userDetails.getMemberId();
-//	    String username = userDetails.getName();
-//	    String email = userDetails.getEmail();
-//
-//	    // 토큰과 사용자 정보를 응답으로 반환
-//	    Map<String, Object> userInfo = new HashMap<>();
-//	    userInfo.put("memberId", memberId);
-//	    userInfo.put("username", username);
-//	    userInfo.put("email", email);
-//
-//	    Map<String, Object> response = new HashMap<>();
-//	    response.put("token", generateToken(username)); // 토큰 생성 메소드 호출
-//	    response.put("user", userInfo);
-//
-//	    return ResponseEntity.ok(response);
-//	}
-	
-	private String generateToken(String username) {
-	    return Jwts.builder()
-	            .setSubject(username)
-	            .setExpiration(new Date(System.currentTimeMillis() + 864000000))
-	            .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
-	            .compact();
-	}
 
 }

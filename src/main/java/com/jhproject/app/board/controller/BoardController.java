@@ -42,21 +42,29 @@ public class BoardController {
         return boards;
     }
     
+    
     @PostMapping("/boardCreate.do")
     public String boardCreate(@RequestBody BoardCreateDto boardCreateDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
         // 실제로 로그인한 사용자인 경우
-        System.out.println("gd");
-        Member good = (Member)authentication.getPrincipal();
-        log.debug("zz={}",good);
-        log.debug("zㅋ 받음={}", boardCreateDto);
-        boardCreateDto.setWriter(good.getMemberId());
-        int result = boardService.boardCreate(boardCreateDto);
-        System.out.println(result);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("이건받아노는디야.."+boardCreateDto);
+        System.out.println(authentication);
+        System.out.println(authentication.getPrincipal());
+        if (authentication != null && authentication.getPrincipal() instanceof MemberDetails) {
+            System.out.println("여기로옴");
+            MemberDetails userDetails = (MemberDetails) authentication.getPrincipal();
+            String memberId = userDetails.getMemberId();
+            boardCreateDto.setWriter(memberId);
+
+            int result = boardService.boardCreate(boardCreateDto);
+            System.out.println(result);
+        } else {
+            // 사용자 정보를 가져오지 못한 경우 또는 다른 상황 처리
+        }
         return null;
     }
-    
+
+
     // 게시글 detail
     @GetMapping("/boardDetail")
     public ResponseEntity<Board> getBoardById(@RequestParam int boardId) {

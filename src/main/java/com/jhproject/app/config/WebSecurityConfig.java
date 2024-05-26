@@ -8,10 +8,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,43 +22,46 @@ import com.jhproject.app.security.CustomUserDetailsService;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-	@Bean
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter){
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-	@Override
+
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailsService)
-            .passwordEncoder(passwordEncoder());
+                .passwordEncoder(passwordEncoder());
     }
-	
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and() // CORS 허용
+        http.cors().configurationSource(corsConfigurationSource()).and() // CORS 허용
+            .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/private/**").authenticated()
+                .antMatchers("/member/**", "/hello","/board").permitAll()
+                .anyRequest().authenticated()
                 .and()
-            .formLogin()
-            	.loginPage("/signIn")
-            	.defaultSuccessUrl("/")  // 로그인 성공 후 이동할 경로
-                .failureUrl("/signIn")  // 로그인 실패 후 이동할 경로
-            	.permitAll()
-            	.and()
-	        .csrf()
-	        	.disable();
-        
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
-    
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

@@ -44,7 +44,7 @@ public class BoardController {
     
     
     @PostMapping("/boardCreate.do")
-    public String boardCreate(@RequestBody BoardCreateDto boardCreateDto) {
+    public ResponseEntity<String> boardCreate(@RequestBody BoardCreateDto boardCreateDto) {
         // 실제로 로그인한 사용자인 경우
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("이건받아노는디야.."+boardCreateDto);
@@ -58,10 +58,15 @@ public class BoardController {
 
             int result = boardService.boardCreate(boardCreateDto);
             System.out.println(result);
+            if(result == 1){
+                return ResponseEntity.ok("게시글 등록완료");
+            }else{
+                return ResponseEntity.ok("게시글 등록중 오류발생. 관리자에게 문의부탁드립니다.");
+            }
         } else {
             // 사용자 정보를 가져오지 못한 경우 또는 다른 상황 처리
+            return ResponseEntity.ok("서버에서 오류발생(로그인관련) 관리자 문의 부탁드립니다.");
         }
-        return null;
     }
 
 

@@ -12,7 +12,6 @@ import com.jhproject.app.board.entity.Board;
 @Mapper
 public interface BoardRepository {
 
-	@Select("SELECT * FROM board ORDER BY regdate DESC")
 	List<Board> getAllBoards();
 
 	@Insert("INSERT INTO board (board_id, title, content, regdate, update_date, writer)\r\n"

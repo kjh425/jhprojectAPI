@@ -30,7 +30,12 @@ public class BoardServiceImpl implements BoardService{
 		result = boardRepository.boardCreate(boardCreateDto);
 		return result;
 	}
-	
+
+	/**
+	 * 게시판 상세보기
+	 * @param boardId 
+	 * @return
+	 */
 	@Override
 	public Board getBoardById(int boardId) {
 		Board board = boardRepository.getBoardById(boardId);

@@ -78,11 +78,8 @@ public class MemberController {
 
 		javaMailSender.send(message);
 		
-//		HttpHeaders headers = new HttpHeaders();
-//	    headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 
 	    return ResponseEntity.status(HttpStatus.OK)
-//	            .headers(headers)
 	            .body(randomCode);
 	}
 	

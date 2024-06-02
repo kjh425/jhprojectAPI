@@ -21,4 +21,5 @@ public interface BoardRepository {
 	@Select("select * from board where board_id = #{boardId}")
 	Board getBoardById(int boardId);
 
+	void deleteBoardContent(int boardId);
 }

@@ -13,4 +13,5 @@ public interface BoardService {
 
 	Board getBoardById(int boardId);
 
+	void deleteBoardContent(int boardId);
 }

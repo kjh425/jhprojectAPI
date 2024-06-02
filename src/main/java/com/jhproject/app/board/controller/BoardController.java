@@ -11,12 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import com.jhproject.app.board.dto.BoardCreateDto;
@@ -81,6 +76,18 @@ public class BoardController {
         } catch (Exception e) {
             log.error("에러 발생: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping(value = "/deleteBoardContent")
+    @ResponseBody
+    public ResponseEntity<String> deleteBoardContent(@RequestParam int boardId){
+        try{
+            boardService.deleteBoardContent(boardId);
+            return ResponseEntity.ok("삭제 완료");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류로 인한 삭제 실패");
         }
     }
     

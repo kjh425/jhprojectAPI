@@ -13,4 +13,11 @@
             regdate desc
     </select>
 
+    <delete id="deleteBoardContent" parameterType="Integer">
+        delete from
+            board
+        where
+            BOARD_ID = #{boardId}
+    </delete>
+
 </mapper>
